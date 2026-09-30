@@ -1,0 +1,14 @@
+page {
+  background: #f6f6f6;
+  color: #333;
+  font-size: 28rpx;
+}
+.price {
+  color: #ff4d4f;
+  font-weight: bold;
+}
+.btn-primary {
+  background: #ff7a45;
+  color: #fff;
+  border-radius: 40rpx;
+}

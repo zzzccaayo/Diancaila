@@ -1,0 +1,23 @@
+<view class="page">
+  <view wx:if="{{!loading && orders.length === 0}}" class="empty">
+    <view class="empty-icon">🍽️</view>
+    <view>还没有订单</view>
+    <button class="btn-primary go" bindtap="goMenu">去点菜</button>
+  </view>
+
+  <view wx:for="{{orders}}" wx:key="_id" class="card">
+    <view class="head">
+      <text class="table">{{item.tableNo}} 号桌</text>
+      <text class="status">{{item.status}}</text>
+    </view>
+    <view wx:for="{{item.items}}" wx:for-item="dish" wx:key="id" class="line">
+      <text>{{dish.name}} × {{dish.count}}</text>
+      <text>¥{{dish.price * dish.count}}</text>
+    </view>
+    <view wx:if="{{item.remark}}" class="remark">备注：{{item.remark}}</view>
+    <view class="foot">
+      <text class="time">{{item.timeText}}</text>
+      <text>合计 <text class="price">¥{{item.totalPrice}}</text></text>
+    </view>
+  </view>
+</view>

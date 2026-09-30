@@ -1,0 +1,44 @@
+<view class="container">
+  <!-- 左侧分类 -->
+  <scroll-view class="cats" scroll-y>
+    <view
+      wx:for="{{menu}}" wx:key="id"
+      class="cat {{activeCat === item.id ? 'cat-active' : ''}}"
+      data-id="{{item.id}}" bindtap="onTapCat">
+      {{item.name}}
+    </view>
+  </scroll-view>
+
+  <!-- 右侧菜品 -->
+  <scroll-view class="dishes" scroll-y scroll-into-view="{{scrollTo}}" scroll-with-animation>
+    <view wx:for="{{menu}}" wx:for-item="cat" wx:key="id" id="cat-{{cat.id}}">
+      <view class="cat-title">{{cat.name}}</view>
+      <view wx:for="{{cat.dishes}}" wx:for-item="dish" wx:key="id" class="dish">
+        <view class="dish-icon">{{dish.icon}}</view>
+        <view class="dish-info">
+          <view class="dish-name">{{dish.name}}</view>
+          <view class="dish-desc">{{dish.desc}}</view>
+          <view class="dish-bottom">
+            <text class="price">¥{{dish.price}}</text>
+            <view class="stepper">
+              <view wx:if="{{counts[dish.id]}}" class="step-btn minus" data-id="{{dish.id}}" bindtap="onMinus">-</view>
+              <text wx:if="{{counts[dish.id]}}" class="step-num">{{counts[dish.id]}}</text>
+              <view class="step-btn plus" data-id="{{dish.id}}" bindtap="onAdd">+</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view style="height: 140rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部购物车栏 -->
+  <view class="cart-bar">
+    <view class="cart-info">
+      <view class="cart-icon">🛒<text wx:if="{{totalCount}}" class="badge">{{totalCount}}</text></view>
+      <text wx:if="{{totalCount}}" class="price">¥{{totalPrice}}</text>
+      <text wx:else class="empty">未选购菜品</text>
+    </view>
+    <view class="checkout {{totalCount ? '' : 'disabled'}}" bindtap="goCheckout">去结算</view>
+  </view>
+</view>
