@@ -19,16 +19,18 @@ function saveLocal(order) {
 async function createOrder(order) {
   const now = new Date()
   const data = { ...order, status: '待制作', createdAt: now.getTime(), timeText: formatTime(now) }
+  let error = '云开发未初始化'
   if (useCloud()) {
     try {
       await wx.cloud.database().collection('orders').add({ data })
-      return 'cloud'
+      return { savedTo: 'cloud' }
     } catch (e) {
       console.warn('写入云数据库失败，改存本机（是否已创建 orders 集合？）', e)
+      error = e.errMsg || e.message || String(e)
     }
   }
   saveLocal(data)
-  return 'local'
+  return { savedTo: 'local', error }
 }
 
 async function listOrders() {

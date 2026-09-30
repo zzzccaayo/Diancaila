@@ -48,7 +48,7 @@ Page({
     this.setData({ submitting: true })
     wx.showLoading({ title: '提交中' })
     try {
-      const savedTo = await order.createOrder({
+      const { savedTo, error } = await order.createOrder({
         tableNo: tableNo.trim(),
         remark: remark.trim(),
         items: items.map(i => ({ id: i.id, name: i.name, price: i.price, count: i.count })),
@@ -63,7 +63,7 @@ Page({
       } else {
         wx.showModal({
           title: '下单成功',
-          content: '订单已保存在本机，未能写入云数据库（请检查云环境和 orders 集合）',
+          content: '订单已保存在本机，未能写入云数据库。原因：' + error,
           showCancel: false,
           success: () => wx.switchTab({ url: '/pages/orders/index' })
         })
