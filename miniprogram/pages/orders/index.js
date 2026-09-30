@@ -10,6 +10,7 @@ Page({
     loading: true,
     isMaster: false,
     canClaim: false,
+    openid: '',
     pendingCount: 0
   },
 
@@ -66,6 +67,7 @@ Page({
       loading: false,
       isMaster: me.isMaster,
       canClaim: !me.hasMaster,
+      openid: me.openid || '',
       pendingCount: orders.filter(o => o.status === '待制作').length
     })
   },
@@ -98,6 +100,24 @@ Page({
       wx.hideLoading()
       wx.showToast({ title: '更新失败，请重试', icon: 'none' })
     }
+  },
+
+  cancelOrder(e) {
+    const { id } = e.currentTarget.dataset
+    wx.showModal({
+      title: '撤回订单',
+      content: '确定要撤回这个订单吗？',
+      confirmText: '撤回',
+      confirmColor: '#ff4d4f',
+      success: async ({ confirm }) => {
+        if (!confirm) return
+        wx.showLoading({ title: '撤回中' })
+        const res = await callKitchen('cancelOrder', { id }).catch(() => ({ ok: false, msg: '撤回失败，请重试' }))
+        wx.hideLoading()
+        wx.showToast({ title: res.ok ? '已撤回' : res.msg, icon: res.ok ? 'success' : 'none' })
+        this.load()
+      }
+    })
   },
 
   claimMaster() {

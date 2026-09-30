@@ -9,10 +9,10 @@
     <button wx:if="{{!isMaster}}" class="btn-primary go" bindtap="goMenu">去点菜</button>
   </view>
 
-  <view wx:for="{{orders}}" wx:key="_id" class="card {{item.status === '已完成' ? 'card-done' : ''}}">
+  <view wx:for="{{orders}}" wx:key="_id" class="card {{item.status === '已完成' ? 'card-done' : ''}} {{item.status === '已撤回' ? 'card-cancelled' : ''}}">
     <view class="head">
       <text class="table">🕒 {{item.timeText}}</text>
-      <text class="status {{item.status === '已完成' ? 'status-done' : ''}}">{{item.status}}</text>
+      <text class="status {{item.status === '已完成' ? 'status-done' : ''}} {{item.status === '已撤回' ? 'status-cancelled' : ''}}">{{item.status}}</text>
     </view>
     <view wx:for="{{item.items}}" wx:for-item="dish" wx:key="id" class="line">
       <text>{{dish.name}}</text>
@@ -23,10 +23,14 @@
       <text></text>
       <text>共 <text class="kiss">{{item.totalCount}} 个亲亲 😘</text></text>
     </view>
-    <view wx:if="{{isMaster}}" class="actions">
-      <button wx:if="{{item.status === '待制作'}}" class="btn-primary done-btn"
-        data-id="{{item._id}}" data-status="已完成" bindtap="setStatus">✅ 做好了</button>
-      <text wx:else class="undo" data-id="{{item._id}}" data-status="待制作" bindtap="setStatus">撤销完成</text>
+    <view class="actions">
+      <text wx:if="{{item.status === '待制作' && openid && item._openid === openid}}"
+        class="cancel" data-id="{{item._id}}" bindtap="cancelOrder">撤回订单</text>
+      <block wx:if="{{isMaster}}">
+        <button wx:if="{{item.status === '待制作'}}" class="btn-primary done-btn"
+          data-id="{{item._id}}" data-status="已完成" bindtap="setStatus">✅ 做好了</button>
+        <text wx:elif="{{item.status === '已完成'}}" class="undo" data-id="{{item._id}}" data-status="待制作" bindtap="setStatus">撤销完成</text>
+      </block>
     </view>
   </view>
 

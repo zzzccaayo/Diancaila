@@ -5,7 +5,9 @@ const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 
-const STATUSES = ['待制作', '已完成']
+const PENDING = '待制作'
+const DONE = '已完成'
+const CANCELLED = '已撤回'
 const CATEGORIES = ['主菜', '配菜', '饮品']
 
 // 第一次读取菜单时写入的默认菜品
@@ -86,7 +88,7 @@ exports.main = async (event) => {
 
   switch (event.action) {
     case 'whoami':
-      return { isMaster, hasMaster: !!master }
+      return { isMaster, hasMaster: !!master, openid: OPENID }
 
     case 'claimMaster': {
       if (master) return { ok: false, msg: '已经有主人了' }
@@ -137,10 +139,22 @@ exports.main = async (event) => {
 
     case 'setStatus': {
       if (!isMaster) return deny
-      if (!STATUSES.includes(event.status)) return { ok: false, msg: '无效的状态' }
-      await db.collection('orders').doc(event.id).update({
-        data: { status: event.status, doneAt: event.status === '已完成' ? Date.now() : null }
+      // 只允许 待制作 <-> 已完成，已撤回的订单不能再改
+      const from = { [DONE]: PENDING, [PENDING]: DONE }[event.status]
+      if (!from) return { ok: false, msg: '无效的状态' }
+      const res = await db.collection('orders').where({ _id: event.id, status: from }).update({
+        data: { status: event.status, doneAt: event.status === DONE ? Date.now() : null }
       })
+      if (!res.stats.updated) return { ok: false, msg: '订单状态已变化，请刷新' }
+      return { ok: true }
+    }
+
+    case 'cancelOrder': {
+      // 下单人自己撤回，且只能撤回还没做的订单
+      const res = await db.collection('orders').where({ _id: event.id, _openid: OPENID, status: PENDING }).update({
+        data: { status: CANCELLED, cancelledAt: Date.now() }
+      })
+      if (!res.stats.updated) return { ok: false, msg: '订单已经做好或已撤回，不能撤回了' }
       return { ok: true }
     }
 
