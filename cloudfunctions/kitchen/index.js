@@ -5,6 +5,25 @@ const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 
+// ===== 新订单提醒（订阅消息）=====
+// 在小程序后台「功能 → 订阅消息」选用模板后，把模板 ID 和字段填到这里
+const NOTIFY = {
+  templateId: '',
+  // 点通知打开哪个版本：developer 开发版 / trial 体验版 / formal 正式版
+  state: 'trial',
+  // 模板字段：key 要和模板详情里的关键词一致（如 thing1、time2）
+  data: order => ({
+    thing1: { value: cut(order.items.map(i => `${i.name}×${i.count}`).join('、'), 20) },
+    time2: { value: order.timeText },
+    thing3: { value: cut(order.remark || '无', 20) }
+  })
+}
+
+// thing 类字段最多 20 个字
+function cut(text, n) {
+  return text.length > n ? text.slice(0, n - 1) + '…' : text
+}
+
 const PENDING = '待制作'
 const DONE = '已完成'
 const CANCELLED = '已撤回'
@@ -88,7 +107,7 @@ exports.main = async (event) => {
 
   switch (event.action) {
     case 'whoami':
-      return { isMaster, hasMaster: !!master, openid: OPENID }
+      return { isMaster, hasMaster: !!master, openid: OPENID, notifyTemplateId: NOTIFY.templateId }
 
     case 'claimMaster': {
       if (master) return { ok: false, msg: '已经有主人了' }
@@ -156,6 +175,28 @@ exports.main = async (event) => {
       })
       if (!res.stats.updated) return { ok: false, msg: '订单已经做好或已撤回，不能撤回了' }
       return { ok: true }
+    }
+
+    case 'notifyNewOrder': {
+      // 下单人下单后调用，给主人发一条新订单提醒
+      if (!NOTIFY.templateId || !master) return { ok: false, msg: '未配置提醒' }
+      const doc = await db.collection('orders').doc(event.id).get().catch(() => null)
+      if (!doc || doc.data._openid !== OPENID || doc.data.notified) return { ok: false, msg: '无需提醒' }
+      await db.collection('orders').doc(event.id).update({ data: { notified: true } })
+      try {
+        await cloud.openapi.subscribeMessage.send({
+          touser: master,
+          templateId: NOTIFY.templateId,
+          page: 'pages/orders/index',
+          miniprogramState: NOTIFY.state,
+          data: NOTIFY.data(doc.data)
+        })
+        return { ok: true }
+      } catch (e) {
+        // 43101：主人的订阅次数用完了
+        console.error('发送新订单提醒失败', e)
+        return { ok: false, msg: e.errMsg || String(e), errCode: e.errCode }
+      }
     }
 
     default:

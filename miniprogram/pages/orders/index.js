@@ -11,6 +11,7 @@ Page({
     isMaster: false,
     canClaim: false,
     openid: '',
+    notifyTemplateId: '',
     pendingCount: 0
   },
 
@@ -68,6 +69,7 @@ Page({
       isMaster: me.isMaster,
       canClaim: !me.hasMaster,
       openid: me.openid || '',
+      notifyTemplateId: me.notifyTemplateId || '',
       pendingCount: orders.filter(o => o.status === '待制作').length
     })
   },
@@ -84,8 +86,32 @@ Page({
     this.setData({ orders: res.orders, pendingCount })
   },
 
+  // 主人订阅新订单提醒：每次授权可收到一条通知
+  subscribe(silent) {
+    const tmplId = this.data.notifyTemplateId
+    if (!tmplId) return
+    wx.requestSubscribeMessage({
+      tmplIds: [tmplId],
+      success: res => {
+        if (silent) return
+        if (res[tmplId] === 'accept') {
+          wx.showToast({ title: '已开启，下一单会通知你', icon: 'none' })
+        } else {
+          wx.showToast({ title: '没有开启提醒', icon: 'none' })
+        }
+      },
+      fail: err => console.warn('订阅提醒失败', err)
+    })
+  },
+
+  onSubscribe() {
+    this.subscribe(false)
+  },
+
   async setStatus(e) {
     const { id, status } = e.currentTarget.dataset
+    // 顺便续一次新订单提醒（勾选过“总是保持”后不会弹窗）
+    this.subscribe(true)
     wx.showLoading({ title: '更新中' })
     try {
       const res = await callKitchen('setStatus', { id, status })

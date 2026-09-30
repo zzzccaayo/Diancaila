@@ -1,6 +1,7 @@
 <view class="page">
   <view wx:if="{{isMaster}}" class="master-bar">
-    👑 主人模式 · 待制作 <text class="master-count">{{pendingCount}}</text> 单
+    <text>👑 主人模式 · 待制作 <text class="master-count">{{pendingCount}}</text> 单</text>
+    <text wx:if="{{notifyTemplateId}}" class="bell" bindtap="onSubscribe">🔔 开启提醒</text>
   </view>
 
   <view wx:if="{{!loading && orders.length === 0}}" class="empty">

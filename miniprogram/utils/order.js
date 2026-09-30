@@ -22,7 +22,11 @@ async function createOrder(order) {
   let error = '云开发未初始化'
   if (useCloud()) {
     try {
-      await wx.cloud.database().collection('orders').add({ data })
+      const res = await wx.cloud.database().collection('orders').add({ data })
+      // 通知主人有新订单（失败不影响下单）
+      wx.cloud.callFunction({ name: 'kitchen', data: { action: 'notifyNewOrder', id: res._id } })
+        .then(r => { if (!r.result.ok) console.warn('新订单提醒未发送', r.result) })
+        .catch(e => console.warn('新订单提醒未发送', e))
       return { savedTo: 'cloud' }
     } catch (e) {
       console.warn('写入云数据库失败，改存本机（是否已创建 orders 集合？）', e)
