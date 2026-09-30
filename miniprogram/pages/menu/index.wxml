@@ -1,8 +1,16 @@
-<view class="container">
+<view wx:if="{{isMaster}}" class="master-bar">👑 主人模式：点 ✏️ 编辑菜品，点右下角 ＋ 添加新菜</view>
+
+<view wx:if="{{categories.length === 0}}" class="empty">
+  <view class="empty-icon">🍽️</view>
+  <view>{{loading ? '菜单加载中…' : (error || '菜单还是空的')}}</view>
+  <button wx:if="{{isMaster && !loading && !error}}" class="btn-primary add-first" bindtap="onAddDish">添加第一道菜</button>
+</view>
+
+<view wx:else class="container {{isMaster ? 'container-master' : ''}}">
   <!-- 左侧分类 -->
   <scroll-view class="cats" scroll-y>
     <view
-      wx:for="{{menu}}" wx:key="id"
+      wx:for="{{categories}}" wx:key="id"
       class="cat {{activeCat === item.id ? 'cat-active' : ''}}"
       data-id="{{item.id}}" bindtap="onTapCat">
       {{item.name}}
@@ -11,34 +19,41 @@
 
   <!-- 右侧菜品 -->
   <scroll-view class="dishes" scroll-y scroll-into-view="{{scrollTo}}" scroll-with-animation>
-    <view wx:for="{{menu}}" wx:for-item="cat" wx:key="id" id="cat-{{cat.id}}">
+    <view wx:for="{{categories}}" wx:for-item="cat" wx:key="id" id="cat-{{cat.id}}">
       <view class="cat-title">{{cat.name}}</view>
-      <view wx:for="{{cat.dishes}}" wx:for-item="dish" wx:key="id" class="dish">
-        <view class="dish-icon">{{dish.icon}}</view>
+      <view wx:for="{{cat.dishes}}" wx:for-item="dish" wx:key="_id" class="dish">
+        <image wx:if="{{dish.image}}" class="dish-img" src="{{dish.image}}" mode="aspectFill" />
+        <view wx:else class="dish-icon">{{dish.icon || '🍽️'}}</view>
         <view class="dish-info">
-          <view class="dish-name">{{dish.name}}</view>
+          <view class="dish-name">
+            {{dish.name}}
+            <text wx:if="{{isMaster}}" class="edit" data-id="{{dish._id}}" catchtap="onEditDish">✏️</text>
+          </view>
           <view class="dish-desc">{{dish.desc}}</view>
           <view class="dish-bottom">
-            <text class="price">¥{{dish.price}}</text>
+            <text class="kiss">一个亲亲 😘</text>
             <view class="stepper">
-              <view wx:if="{{counts[dish.id]}}" class="step-btn minus" data-id="{{dish.id}}" bindtap="onMinus">-</view>
-              <text wx:if="{{counts[dish.id]}}" class="step-num">{{counts[dish.id]}}</text>
-              <view class="step-btn plus" data-id="{{dish.id}}" bindtap="onAdd">+</view>
+              <view wx:if="{{counts[dish._id]}}" class="step-btn minus" data-id="{{dish._id}}" bindtap="onMinus">-</view>
+              <text wx:if="{{counts[dish._id]}}" class="step-num">{{counts[dish._id]}}</text>
+              <view class="step-btn plus" data-id="{{dish._id}}" bindtap="onAdd">+</view>
             </view>
           </view>
         </view>
       </view>
     </view>
-    <view style="height: 140rpx;"></view>
+    <view style="height: 160rpx;"></view>
   </scroll-view>
+</view>
 
-  <!-- 底部购物车栏 -->
-  <view class="cart-bar">
-    <view class="cart-info">
-      <view class="cart-icon">🛒<text wx:if="{{totalCount}}" class="badge">{{totalCount}}</text></view>
-      <text wx:if="{{totalCount}}" class="price">¥{{totalPrice}}</text>
-      <text wx:else class="empty">未选购菜品</text>
-    </view>
-    <view class="checkout {{totalCount ? '' : 'disabled'}}" bindtap="goCheckout">去结算</view>
+<!-- 主人：添加新菜 -->
+<view wx:if="{{isMaster && categories.length}}" class="fab" bindtap="onAddDish">＋</view>
+
+<!-- 底部购物车栏 -->
+<view wx:if="{{categories.length}}" class="cart-bar">
+  <view class="cart-info">
+    <view class="cart-icon">🛒<text wx:if="{{totalCount}}" class="badge">{{totalCount}}</text></view>
+    <text wx:if="{{totalCount}}" class="cart-kiss">{{totalCount}} 个亲亲</text>
+    <text wx:else class="empty-text">未选购菜品</text>
   </view>
+  <view class="checkout {{totalCount ? '' : 'disabled'}}" bindtap="goCheckout">去结算</view>
 </view>

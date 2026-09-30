@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "点菜"
+  "navigationBarTitleText": "点菜",
+  "enablePullDownRefresh": true
 }

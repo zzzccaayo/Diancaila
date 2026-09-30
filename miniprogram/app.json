@@ -2,7 +2,8 @@
   "pages": [
     "pages/menu/index",
     "pages/checkout/index",
-    "pages/orders/index"
+    "pages/orders/index",
+    "pages/dish-edit/index"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ff7a45",
@@ -15,8 +16,14 @@
     "selectedColor": "#ff7a45",
     "backgroundColor": "#ffffff",
     "list": [
-      { "pagePath": "pages/menu/index", "text": "点菜" },
-      { "pagePath": "pages/orders/index", "text": "我的订单" }
+      {
+        "pagePath": "pages/menu/index",
+        "text": "点菜"
+      },
+      {
+        "pagePath": "pages/orders/index",
+        "text": "我的订单"
+      }
     ]
   },
   "style": "v2",

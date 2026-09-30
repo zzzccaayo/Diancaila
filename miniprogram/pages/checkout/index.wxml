@@ -8,15 +8,15 @@
 
   <view class="card">
     <view class="card-title">已选菜品</view>
-    <view wx:for="{{items}}" wx:key="id" class="item">
-      <text class="item-icon">{{item.icon}}</text>
+    <view wx:for="{{items}}" wx:key="_id" class="item">
+      <image wx:if="{{item.image}}" class="item-img" src="{{item.image}}" mode="aspectFill" />
+      <text wx:else class="item-icon">{{item.icon || '🍽️'}}</text>
       <text class="item-name">{{item.name}}</text>
       <view class="stepper">
-        <view class="step-btn minus" data-id="{{item.id}}" bindtap="onMinus">-</view>
+        <view class="step-btn minus" data-id="{{item._id}}" bindtap="onMinus">-</view>
         <text class="step-num">{{item.count}}</text>
-        <view class="step-btn plus" data-id="{{item.id}}" bindtap="onAdd">+</view>
+        <view class="step-btn plus" data-id="{{item._id}}" bindtap="onAdd">+</view>
       </view>
-      <text class="price item-price">¥{{item.price * item.count}}</text>
     </view>
   </view>
 
@@ -28,7 +28,7 @@
   <view style="height: 140rpx;"></view>
 
   <view class="footer">
-    <text>共 {{totalCount}} 份，合计 <text class="price">¥{{totalPrice}}</text></text>
+    <text>共 {{totalCount}} 份，需支付 <text class="kiss">{{totalCount}} 个亲亲 😘</text></text>
     <button class="btn-primary submit" disabled="{{submitting}}" bindtap="submit">提交订单</button>
   </view>
 </view>

@@ -5,7 +5,6 @@ Page({
   data: {
     items: [],
     totalCount: 0,
-    totalPrice: '0.00',
     tableNo: '',
     remark: '',
     submitting: false
@@ -39,7 +38,7 @@ Page({
   },
 
   async submit() {
-    const { items, totalCount, totalPrice, tableNo, remark, submitting } = this.data
+    const { items, totalCount, tableNo, remark, submitting } = this.data
     if (submitting) return
     if (!tableNo.trim()) {
       wx.showToast({ title: '请填写桌号', icon: 'none' })
@@ -51,9 +50,8 @@ Page({
       const { savedTo, error } = await order.createOrder({
         tableNo: tableNo.trim(),
         remark: remark.trim(),
-        items: items.map(i => ({ id: i.id, name: i.name, price: i.price, count: i.count })),
-        totalCount,
-        totalPrice
+        items: items.map(i => ({ id: i._id, name: i.name, count: i.count })),
+        totalCount
       })
       cart.clear()
       wx.hideLoading()

@@ -5,7 +5,13 @@ const ENV_ID = 'cloud1-d3gxe2es886da7ef7'
 App({
   globalData: {
     cloudReady: false,
-    // 购物车：{ [dishId]: 数量 }
+    isMaster: false,
+    hasMaster: true,
+    // 菜单（由 utils/menu.js 填充）
+    dishes: [],
+    categories: [],
+    dishMap: {},
+    // 购物车：{ [菜品 _id]: 数量 }
     cart: {}
   },
 

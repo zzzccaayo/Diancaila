@@ -1,8 +1,4 @@
-const menu = require('../data/menu.js')
-
-// 菜品 id -> 菜品
-const dishMap = {}
-menu.forEach(cat => cat.dishes.forEach(d => { dishMap[d.id] = d }))
+// 购物车：{ [菜品 _id]: 数量 }，保存在 globalData.cart
 
 function getCart() {
   return getApp().globalData.cart
@@ -19,14 +15,15 @@ function clear() {
   getApp().globalData.cart = {}
 }
 
-// 汇总：已选菜品列表、总数量、总价
+// 汇总：已选菜品列表、总份数（每份一个亲亲）
 function summary() {
   const cart = getCart()
+  const dishMap = getApp().globalData.dishMap
+  // 已被主人删除的菜品从购物车移除
+  Object.keys(cart).forEach(id => { if (!dishMap[id]) delete cart[id] })
   const items = Object.keys(cart).map(id => ({ ...dishMap[id], count: cart[id] }))
   const totalCount = items.reduce((s, i) => s + i.count, 0)
-  // 用“分”计算避免小数误差
-  const totalCents = items.reduce((s, i) => s + Math.round(i.price * 100) * i.count, 0)
-  return { items, totalCount, totalPrice: (totalCents / 100).toFixed(2) }
+  return { items, totalCount }
 }
 
-module.exports = { menu, change, clear, summary, getCart }
+module.exports = { change, clear, summary, getCart }

@@ -7,7 +7,8 @@
 .item { display: flex; align-items: center; padding: 16rpx 0; }
 .item-icon { font-size: 44rpx; margin-right: 16rpx; }
 .item-name { flex: 1; }
-.item-price { width: 120rpx; text-align: right; }
+.item-img { width: 64rpx; height: 64rpx; border-radius: 8rpx; margin-right: 16rpx; }
+.kiss { color: #ff4d8d; font-weight: bold; }
 .stepper { display: flex; align-items: center; }
 .step-btn { width: 44rpx; height: 44rpx; line-height: 40rpx; text-align: center; border-radius: 50%; font-size: 32rpx; }
 .minus { border: 2rpx solid #ff7a45; color: #ff7a45; }

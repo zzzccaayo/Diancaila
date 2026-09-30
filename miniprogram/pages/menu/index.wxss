@@ -1,11 +1,13 @@
 .container { display: flex; height: 100vh; }
+.container-master { height: calc(100vh - 64rpx); }
 .cats { width: 180rpx; height: 100%; background: #f0f0f0; }
 .cat { padding: 32rpx 20rpx; text-align: center; color: #666; }
 .cat-active { background: #fff; color: #ff7a45; font-weight: bold; border-left: 6rpx solid #ff7a45; }
 .dishes { flex: 1; height: 100%; background: #fff; }
 .cat-title { padding: 20rpx 24rpx; font-size: 26rpx; color: #999; background: #fafafa; }
 .dish { display: flex; padding: 24rpx; border-bottom: 1rpx solid #f2f2f2; }
-.dish-icon { width: 130rpx; height: 130rpx; font-size: 80rpx; line-height: 130rpx; text-align: center; background: #fff4ee; border-radius: 16rpx; }
+.dish-img { width: 130rpx; height: 130rpx; border-radius: 16rpx; flex-shrink: 0; background: #fff4ee; }
+.dish-icon { flex-shrink: 0;  width: 130rpx; height: 130rpx; font-size: 80rpx; line-height: 130rpx; text-align: center; background: #fff4ee; border-radius: 16rpx; }
 .dish-info { flex: 1; margin-left: 20rpx; display: flex; flex-direction: column; justify-content: space-between; }
 .dish-name { font-size: 30rpx; font-weight: bold; }
 .dish-desc { font-size: 24rpx; color: #999; }
@@ -19,7 +21,15 @@
 .cart-info { display: flex; align-items: center; padding-left: 30rpx; color: #fff; }
 .cart-icon { position: relative; font-size: 44rpx; margin-right: 20rpx; }
 .badge { position: absolute; top: -10rpx; right: -20rpx; background: #ff4d4f; color: #fff; font-size: 20rpx; min-width: 32rpx; height: 32rpx; line-height: 32rpx; text-align: center; border-radius: 16rpx; padding: 0 6rpx; }
-.cart-info .price { color: #fff; font-size: 34rpx; }
-.empty { color: #999; }
+.cart-kiss { color: #fff; font-size: 32rpx; font-weight: bold; }
+.empty-text { color: #999; }
 .checkout { height: 100%; padding: 0 50rpx; line-height: 100rpx; background: #ff7a45; color: #fff; font-weight: bold; }
 .checkout.disabled { background: #555; color: #999; }
+
+.kiss { color: #ff4d8d; font-size: 26rpx; font-weight: bold; }
+.edit { margin-left: 12rpx; font-size: 26rpx; padding: 6rpx; }
+.master-bar { height: 64rpx; line-height: 64rpx; background: #fff4ee; color: #ff7a45; font-size: 24rpx; text-align: center; }
+.fab { position: fixed; right: 40rpx; bottom: 160rpx; width: 96rpx; height: 96rpx; line-height: 92rpx; text-align: center; font-size: 56rpx; color: #fff; background: #ff7a45; border-radius: 50%; box-shadow: 0 6rpx 16rpx rgba(255,122,69,0.4); }
+.empty { text-align: center; padding-top: 240rpx; color: #999; }
+.empty-icon { font-size: 120rpx; margin-bottom: 20rpx; }
+.add-first { width: 320rpx; margin-top: 40rpx; }

@@ -1,27 +1,49 @@
+const menu = require('../../utils/menu.js')
 const cart = require('../../utils/cart.js')
 
 Page({
   data: {
-    menu: cart.menu,
-    activeCat: cart.menu[0].id,
+    categories: [],
+    activeCat: '',
     scrollTo: '',
     counts: {},
     totalCount: 0,
-    totalPrice: '0.00'
+    isMaster: false,
+    loading: true,
+    error: ''
   },
 
-  onShow() {
-    // 从结算页返回时刷新数量
-    this.refresh()
+  onLoad() {
+    // 先用本机缓存秒开，再从云端刷新
+    if (menu.loadCache()) this.applyMenu()
   },
 
-  refresh() {
-    const s = cart.summary()
+  async onShow() {
+    this.refreshCart()
+    const res = await menu.load()
+    if (res.ok) this.applyMenu()
+    this.setData({ loading: false, error: res.ok ? '' : res.msg })
+  },
+
+  async onPullDownRefresh() {
+    await this.onShow()
+    wx.stopPullDownRefresh()
+  },
+
+  applyMenu() {
+    const categories = menu.group()
+    const ids = categories.map(c => c.id)
     this.setData({
-      counts: { ...cart.getCart() },
-      totalCount: s.totalCount,
-      totalPrice: s.totalPrice
+      categories,
+      isMaster: getApp().globalData.isMaster,
+      activeCat: ids.includes(this.data.activeCat) ? this.data.activeCat : (ids[0] || '')
     })
+    this.refreshCart()
+  },
+
+  refreshCart() {
+    const s = cart.summary()
+    this.setData({ counts: { ...cart.getCart() }, totalCount: s.totalCount })
   },
 
   onTapCat(e) {
@@ -31,12 +53,20 @@ Page({
 
   onAdd(e) {
     cart.change(e.currentTarget.dataset.id, 1)
-    this.refresh()
+    this.refreshCart()
   },
 
   onMinus(e) {
     cart.change(e.currentTarget.dataset.id, -1)
-    this.refresh()
+    this.refreshCart()
+  },
+
+  onEditDish(e) {
+    wx.navigateTo({ url: '/pages/dish-edit/index?id=' + e.currentTarget.dataset.id })
+  },
+
+  onAddDish() {
+    wx.navigateTo({ url: '/pages/dish-edit/index' })
   },
 
   goCheckout() {

@@ -1,12 +1,12 @@
 <view class="page">
-  <view wx:if="{{isChef}}" class="chef-bar">
-    👨‍🍳 厨师模式 · 待制作 <text class="chef-count">{{pendingCount}}</text> 单
+  <view wx:if="{{isMaster}}" class="master-bar">
+    👑 主人模式 · 待制作 <text class="master-count">{{pendingCount}}</text> 单
   </view>
 
   <view wx:if="{{!loading && orders.length === 0}}" class="empty">
     <view class="empty-icon">🍽️</view>
     <view>还没有订单</view>
-    <button wx:if="{{!isChef}}" class="btn-primary go" bindtap="goMenu">去点菜</button>
+    <button wx:if="{{!isMaster}}" class="btn-primary go" bindtap="goMenu">去点菜</button>
   </view>
 
   <view wx:for="{{orders}}" wx:key="_id" class="card {{item.status === '已完成' ? 'card-done' : ''}}">
@@ -15,20 +15,20 @@
       <text class="status {{item.status === '已完成' ? 'status-done' : ''}}">{{item.status}}</text>
     </view>
     <view wx:for="{{item.items}}" wx:for-item="dish" wx:key="id" class="line">
-      <text>{{dish.name}} × {{dish.count}}</text>
-      <text>¥{{dish.price * dish.count}}</text>
+      <text>{{dish.name}}</text>
+      <text>× {{dish.count}}</text>
     </view>
     <view wx:if="{{item.remark}}" class="remark">备注：{{item.remark}}</view>
     <view class="foot">
       <text class="time">{{item.timeText}}</text>
-      <text>合计 <text class="price">¥{{item.totalPrice}}</text></text>
+      <text>共 <text class="kiss">{{item.totalCount}} 个亲亲 😘</text></text>
     </view>
-    <view wx:if="{{isChef}}" class="actions">
+    <view wx:if="{{isMaster}}" class="actions">
       <button wx:if="{{item.status === '待制作'}}" class="btn-primary done-btn"
         data-id="{{item._id}}" data-status="已完成" bindtap="setStatus">✅ 做好了</button>
       <text wx:else class="undo" data-id="{{item._id}}" data-status="待制作" bindtap="setStatus">撤销完成</text>
     </view>
   </view>
 
-  <view wx:if="{{canClaim}}" class="claim" bindtap="claimChef">我是做菜的人，绑定为厨师 →</view>
+  <view wx:if="{{canClaim}}" class="claim" bindtap="claimMaster">我是主人，绑定主人身份 →</view>
 </view>

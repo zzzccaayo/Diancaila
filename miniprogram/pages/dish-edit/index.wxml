@@ -1,0 +1,39 @@
+<view class="page">
+  <view class="card photo-card">
+    <view class="photo" bindtap="chooseImage">
+      <image wx:if="{{image}}" class="photo-img" src="{{image}}" mode="aspectFill" />
+      <view wx:else class="photo-empty">
+        <view class="photo-icon">{{icon || '📷'}}</view>
+        <view class="photo-tip">点击拍照或从相册选择</view>
+      </view>
+    </view>
+    <view wx:if="{{image}}" class="photo-actions">
+      <text bindtap="chooseImage">更换图片</text>
+      <text class="danger" bindtap="removeImage">移除图片</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <text class="label">菜名</text>
+      <input class="input" placeholder="例如：番茄炒蛋" value="{{name}}" maxlength="20" bindinput="onNameInput" />
+    </view>
+    <view class="row">
+      <text class="label">分类</text>
+      <picker class="input" range="{{categories}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view>{{categories[categoryIndex]}} ▾</view>
+      </picker>
+    </view>
+    <view class="row">
+      <text class="label">描述</text>
+      <input class="input" placeholder="选填，例如：少放辣" value="{{desc}}" maxlength="40" bindinput="onDescInput" />
+    </view>
+    <view class="row">
+      <text class="label">图标</text>
+      <input class="input" placeholder="选填，没有图片时显示，如 🍜" value="{{icon}}" maxlength="8" bindinput="onIconInput" />
+    </view>
+  </view>
+
+  <button class="btn-primary save" disabled="{{saving || uploading}}" bindtap="save">保存</button>
+  <button wx:if="{{id}}" class="delete" bindtap="remove">删除这道菜</button>
+</view>
