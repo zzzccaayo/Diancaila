@@ -1,6 +1,6 @@
 // 云开发环境 ID：云开发控制台 → 设置 → 环境 ID（形如 cloud1-xxxxxx）
 // 留空则使用默认环境
-const ENV_ID = ''
+const ENV_ID = 'cloud1-d3gxe2es886da7ef7'
 
 App({
   globalData: {
