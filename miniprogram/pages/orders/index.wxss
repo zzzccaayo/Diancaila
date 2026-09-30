@@ -10,3 +10,11 @@
 .empty { text-align: center; padding-top: 200rpx; color: #999; }
 .empty-icon { font-size: 120rpx; margin-bottom: 20rpx; }
 .go { width: 300rpx; margin-top: 40rpx; }
+.chef-bar { background: #fff4ee; color: #ff7a45; padding: 20rpx 24rpx; border-radius: 16rpx; margin-bottom: 20rpx; font-weight: bold; }
+.chef-count { font-size: 36rpx; margin: 0 6rpx; }
+.card-done { opacity: 0.6; }
+.status-done { color: #52c41a; }
+.actions { margin-top: 20rpx; text-align: right; }
+.done-btn { display: inline-block; width: 240rpx; font-size: 28rpx; margin: 0; }
+.undo { color: #999; font-size: 24rpx; text-decoration: underline; }
+.claim { text-align: center; color: #bbb; font-size: 24rpx; padding: 40rpx 0; }
