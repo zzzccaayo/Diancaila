@@ -8,14 +8,17 @@ const db = cloud.database()
 // ===== 新订单提醒（订阅消息）=====
 // 在小程序后台「功能 → 订阅消息」选用模板后，把模板 ID 和字段填到这里
 const NOTIFY = {
-  templateId: '',
+  templateId: 'C6-OQsACpz0TxUSmmMAS3x1qPXjCMQFXM5GOdjmUBRs',
   // 点通知打开哪个版本：developer 开发版 / trial 体验版 / formal 正式版
   state: 'trial',
   // 模板字段：key 要和模板详情里的关键词一致（如 thing1、time2）
   data: order => ({
-    thing1: { value: cut(order.items.map(i => `${i.name}×${i.count}`).join('、'), 20) },
-    time2: { value: order.timeText },
-    thing3: { value: cut(order.remark || '无', 20) }
+    // 菜品名称
+    thing21: { value: cut(order.items.map(i => `${i.name}×${i.count}`).join('、'), 20) },
+    // 下单时间
+    time7: { value: order.timeText },
+    // 温馨提示（备注）
+    thing5: { value: cut(order.remark || '无', 20) }
   })
 }
 
