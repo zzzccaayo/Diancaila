@@ -48,7 +48,7 @@ Page({
     this.setData({ submitting: true })
     wx.showLoading({ title: '提交中' })
     try {
-      await order.createOrder({
+      const savedTo = await order.createOrder({
         tableNo: tableNo.trim(),
         remark: remark.trim(),
         items: items.map(i => ({ id: i.id, name: i.name, price: i.price, count: i.count })),
@@ -57,8 +57,17 @@ Page({
       })
       cart.clear()
       wx.hideLoading()
-      wx.showToast({ title: '下单成功', icon: 'success' })
-      setTimeout(() => wx.switchTab({ url: '/pages/orders/index' }), 800)
+      if (savedTo === 'cloud') {
+        wx.showToast({ title: '下单成功', icon: 'success' })
+        setTimeout(() => wx.switchTab({ url: '/pages/orders/index' }), 800)
+      } else {
+        wx.showModal({
+          title: '下单成功',
+          content: '订单已保存在本机，未能写入云数据库（请检查云环境和 orders 集合）',
+          showCancel: false,
+          success: () => wx.switchTab({ url: '/pages/orders/index' })
+        })
+      }
     } catch (e) {
       wx.hideLoading()
       wx.showToast({ title: '下单失败，请重试', icon: 'none' })

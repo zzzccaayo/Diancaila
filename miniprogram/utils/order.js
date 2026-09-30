@@ -22,12 +22,13 @@ async function createOrder(order) {
   if (useCloud()) {
     try {
       await wx.cloud.database().collection('orders').add({ data })
-      return
+      return 'cloud'
     } catch (e) {
       console.warn('写入云数据库失败，改存本机（是否已创建 orders 集合？）', e)
     }
   }
   saveLocal(data)
+  return 'local'
 }
 
 async function listOrders() {
