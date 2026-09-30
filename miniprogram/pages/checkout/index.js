@@ -5,7 +5,6 @@ Page({
   data: {
     items: [],
     totalCount: 0,
-    tableNo: '',
     remark: '',
     submitting: false
   },
@@ -29,26 +28,17 @@ Page({
     if (this.data.totalCount === 0) wx.navigateBack()
   },
 
-  onTableInput(e) {
-    this.setData({ tableNo: e.detail.value })
-  },
-
   onRemarkInput(e) {
     this.setData({ remark: e.detail.value })
   },
 
   async submit() {
-    const { items, totalCount, tableNo, remark, submitting } = this.data
+    const { items, totalCount, remark, submitting } = this.data
     if (submitting) return
-    if (!tableNo.trim()) {
-      wx.showToast({ title: '请填写桌号', icon: 'none' })
-      return
-    }
     this.setData({ submitting: true })
     wx.showLoading({ title: '提交中' })
     try {
       const { savedTo, error } = await order.createOrder({
-        tableNo: tableNo.trim(),
         remark: remark.trim(),
         items: items.map(i => ({ id: i._id, name: i.name, count: i.count })),
         totalCount

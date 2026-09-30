@@ -1,12 +1,5 @@
 <view class="page">
   <view class="card">
-    <view class="row">
-      <text class="label">桌号</text>
-      <input class="input" type="number" placeholder="请输入桌号，如 8" value="{{tableNo}}" bindinput="onTableInput" />
-    </view>
-  </view>
-
-  <view class="card">
     <view class="card-title">已选菜品</view>
     <view wx:for="{{items}}" wx:key="_id" class="item">
       <image wx:if="{{item.image}}" class="item-img" src="{{item.image}}" mode="aspectFill" />

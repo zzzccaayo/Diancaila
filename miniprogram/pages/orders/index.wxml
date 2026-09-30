@@ -11,7 +11,7 @@
 
   <view wx:for="{{orders}}" wx:key="_id" class="card {{item.status === '已完成' ? 'card-done' : ''}}">
     <view class="head">
-      <text class="table">{{item.tableNo}} 号桌</text>
+      <text class="table">🕒 {{item.timeText}}</text>
       <text class="status {{item.status === '已完成' ? 'status-done' : ''}}">{{item.status}}</text>
     </view>
     <view wx:for="{{item.items}}" wx:for-item="dish" wx:key="id" class="line">
@@ -20,7 +20,7 @@
     </view>
     <view wx:if="{{item.remark}}" class="remark">备注：{{item.remark}}</view>
     <view class="foot">
-      <text class="time">{{item.timeText}}</text>
+      <text></text>
       <text>共 <text class="kiss">{{item.totalCount}} 个亲亲 😘</text></text>
     </view>
     <view wx:if="{{isMaster}}" class="actions">
